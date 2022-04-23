@@ -33,4 +33,5 @@ files.ifPresent(this::doSomething);
 ```java
 Try.attempt(this::startProcess)
     .onFinally(this::endProcess);
+    .run();
 ```
