@@ -11,7 +11,7 @@
 <dependency>
     <groupId>com.github.Jadefalke2</groupId>
     <artifactId>Try-Catch-Wrapper</artifactId>
-    <version>v0.0.1-alpha</version>
+    <version>v1.0.0</version>
 </dependency>
 ```
 # Usage
