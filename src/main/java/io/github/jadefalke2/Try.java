@@ -8,13 +8,14 @@ import lombok.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
  * This class describes a wrapper around a try-catch-finally block.
  * @param <T> the return type of this try-catch-finally block
  */
-public class Try <T> {
+public class Try <T> implements TryBuilder.CatchBuilder<T>, TryBuilder<T> {
 
     private final UnsafeSupplier<T> attempt;
     private final Map<Class<? extends Exception>, Consumer<? super Exception>> catchClauses;
@@ -34,7 +35,7 @@ public class Try <T> {
      * @param runnable the code to be executed
      * @return the newly constructed try
      */
-    public static Try<Void> attempt (@NonNull UnsafeRunnable runnable) {
+    public static TryBuilder.CatchBuilder<Void> attempt (@NonNull UnsafeRunnable runnable) {
         return attempt(() -> {
             runnable.run();
             return null;
@@ -47,7 +48,7 @@ public class Try <T> {
      * @param <T> the type to be returned
      * @return the newly constructed try
      */
-    public static <T> Try<T> attempt (@NonNull UnsafeSupplier<T> supplier) {
+    public static <T> TryBuilder.CatchBuilder<T> attempt (@NonNull UnsafeSupplier<T> supplier) {
         return new Try<>(supplier);
     }
 
@@ -58,7 +59,7 @@ public class Try <T> {
      * @return the try instance
      */
     @SuppressWarnings("unchecked")
-    public <E extends Exception> Try<T> onCatch (@NonNull Class<E> exceptionType, @NonNull Consumer<? super E> onCatch) {
+    public <E extends Exception> TryBuilder.CatchBuilder<T> onCatch (@NonNull Class<E> exceptionType, @NonNull Consumer<? super E> onCatch) {
         if (catchClauses.containsKey(exceptionType))
             throw new CatchBlockAlreadyExistsException();
 
@@ -71,7 +72,7 @@ public class Try <T> {
      * @param onCatch the code to run when this catch block is executed
      * @return the try instance
      */
-    public Try<T> onCatch (@NonNull Consumer<? super Exception> onCatch) {
+    public TryBuilder.CatchBuilder<T> onCatch (@NonNull Consumer<? super Exception> onCatch) {
         return onCatch(Exception.class, onCatch);
     }
 
@@ -80,7 +81,7 @@ public class Try <T> {
      * @param onFinally the code run to run in the finally-block
      * @return the try instance
      */
-    public Try<T> onFinally (@NonNull Runnable onFinally) {
+    public TryBuilder<T> onFinally (@NonNull Runnable onFinally) {
         this.onFinally = onFinally;
         return this;
     }
@@ -90,7 +91,7 @@ public class Try <T> {
      * Finally, whatever branch is executed prior the finally-block will be executed.
      */
     public void run () {
-        get();
+        obtain();
     }
 
     /**
@@ -98,7 +99,7 @@ public class Try <T> {
      * Finally, whatever branch is executed prior the finally-block will be executed.
      * @return the Optional describing the value obtained within the try-catch block
      */
-    public Optional<T> get () {
+    public Optional<T> obtain () {
         Optional<T> val = Optional.empty();
         try {
             val = Optional.ofNullable(attempt.supply());
@@ -112,24 +113,11 @@ public class Try <T> {
         return val;
     }
 
-    /**
-     * Executes the code in the try-block, catching with the respective catch-block in case an Exception.
-     * Finally, whatever branch is executed prior the finally-block will be executed.
-     * @return the value obtained by the computation
-     */
-    public T getOrThrow () {
-        return get().orElseThrow();
+    @Override
+    public CompletableFuture<Optional<T>> obtainLater () {
+        return CompletableFuture.supplyAsync(this::obtain);
     }
 
-    /**
-     * Executes the code in the try-block, catching with the respective catch-block in case an Exception.
-     * Finally, whatever branch is executed prior the finally-block will be executed.
-     * @param val the value to be returned if the value obtained in the try catch block is null
-     * @return the value obtained
-     */
-    public T getOrElse (T val) {
-        return get().orElse(val);
-    }
 
     /**
      * Gets the correct catch clause for the given class

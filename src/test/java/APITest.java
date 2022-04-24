@@ -1,4 +1,5 @@
 import io.github.jadefalke2.Try;
+import io.github.jadefalke2.TryBuilder;
 import io.github.jadefalke2.exceptions.CatchBlockAlreadyExistsException;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
 import org.junit.Test;
@@ -50,16 +51,20 @@ public class APITest {
     @Test
     public void testReturnValue () {
         assertEquals(Integer.valueOf(5),
-                Try.attempt(() -> 5).getOrThrow());
+                Try.attempt(() -> 5).obtain().orElseThrow());
 
         assertEquals(10, Try.attempt(() -> {throw new IOException();})
-                        .getOrElse(10));
+                            .obtain().orElse(10));
 
         assertThrows(NoSuchElementException.class, () ->
-                Try.attempt(() -> null).getOrThrow());
+                Try.attempt(() -> null).obtain().orElseThrow());
 
         assertThrows(NoSuchElementException.class, () ->
-                Try.attempt((UnsafeSupplier<?>) () -> {throw new Exception();}).getOrThrow());
+                Try.attempt((UnsafeSupplier<?>) () -> {throw new Exception();}).obtain().orElseThrow());
     }
 
+    @Test
+    public void testMisc () {
+
+    }
 }
