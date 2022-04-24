@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -64,7 +65,20 @@ public class APITest {
     }
 
     @Test
-    public void testMisc () {
+    public void testFinally () {
+        AtomicBoolean done = new AtomicBoolean(false);
+        Try.attempt(() -> {})
+            .onCatch(e -> fail())
+            .onFinally(() -> done.set(true))
+            .run();
+        assertTrue(done.get());
 
+        AtomicInteger found = new AtomicInteger(0);
+        Try.attempt(() -> {throw new Exception();})
+           .onCatch(e -> found.incrementAndGet())
+           .onFinally(found::incrementAndGet)
+           .run();
+        assertEquals(2, found.get());
     }
+
 }
