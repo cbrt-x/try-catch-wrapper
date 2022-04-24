@@ -1,10 +1,10 @@
 package io.github.jadefalke2.interfaces;
 
-public interface UnsafeRunnable {
+public interface UnsafeRunnable <E extends Exception> {
 
-    void run () throws Exception;
+    void run () throws E;
 
-    static UnsafeRunnable ofRunnable (Runnable src) {
+    static UnsafeRunnable<Exception> ofRunnable (Runnable src) {
         return src::run;
     }
 }

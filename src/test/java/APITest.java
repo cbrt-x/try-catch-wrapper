@@ -60,7 +60,7 @@ public class APITest {
                 Try.attempt(() -> null).obtain().orElseThrow());
 
         assertThrows(NoSuchElementException.class, () ->
-                Try.attempt((UnsafeSupplier<?>) () -> {throw new Exception();}).obtain().orElseThrow());
+                Try.attempt((UnsafeSupplier<?, ?>) () -> {throw new Exception();}).obtain().orElseThrow());
     }
 
     @Test

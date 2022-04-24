@@ -15,9 +15,9 @@ import java.util.function.Consumer;
  * This class describes a wrapper around a try-catch-finally block.
  * @param <T> the return type of this try-catch-finally block
  */
-public class Try <T> implements TryBuilder.CatchBuilder<T>, TryBuilder<T> {
+public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>, TryBuilder<T> {
 
-    private final UnsafeSupplier<T> attempt;
+    private final UnsafeSupplier<Ex, T> attempt;
     private final Map<Class<? extends Exception>, Consumer<? super Exception>> catchClauses;
     private Runnable onFinally;
 
@@ -25,7 +25,7 @@ public class Try <T> implements TryBuilder.CatchBuilder<T>, TryBuilder<T> {
      * Constructs a new Try-catch-builder with the given Exception-throwing supplier as the code to execute
      * @param attempt the code to run inside the try-block
      */
-    private Try (UnsafeSupplier<T> attempt) {
+    private Try (UnsafeSupplier<Ex, T> attempt) {
         this.attempt = attempt;
         catchClauses = new HashMap<>();
     }
@@ -35,7 +35,7 @@ public class Try <T> implements TryBuilder.CatchBuilder<T>, TryBuilder<T> {
      * @param runnable the code to be executed
      * @return the newly constructed try
      */
-    public static TryBuilder.CatchBuilder<Void> attempt (@NonNull UnsafeRunnable runnable) {
+    public static <E extends Exception> TryBuilder.CatchBuilder<Void> attempt (@NonNull UnsafeRunnable<E> runnable) {
         return attempt(() -> {
             runnable.run();
             return null;
@@ -48,7 +48,7 @@ public class Try <T> implements TryBuilder.CatchBuilder<T>, TryBuilder<T> {
      * @param <T> the type to be returned
      * @return the newly constructed try
      */
-    public static <T> TryBuilder.CatchBuilder<T> attempt (@NonNull UnsafeSupplier<T> supplier) {
+    public static <E extends Exception, T> TryBuilder.CatchBuilder<T> attempt (@NonNull UnsafeSupplier<E, T> supplier) {
         return new Try<>(supplier);
     }
 
