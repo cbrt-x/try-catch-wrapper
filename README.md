@@ -24,7 +24,7 @@ Try.attempt(this::executeMethod)
 ### Obtain value from method call
 ```java
 var files = Try.attempt(() -> Files.list(path))
-    .onCatch(IOException.class, e -> e.printStacktrace())
+    .onCatch(IOException.class, Throwable::printStacktrace)
     .get();
 
 files.ifPresent(this::doSomething);
