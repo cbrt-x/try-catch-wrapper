@@ -1,5 +1,4 @@
 import io.github.jadefalke2.Try;
-import io.github.jadefalke2.TryBuilder;
 import io.github.jadefalke2.exceptions.CatchBlockAlreadyExistsException;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
 import org.junit.Test;
@@ -81,4 +80,18 @@ public class APITest {
         assertEquals(2, found.get());
     }
 
+    @Test
+    public void testFuture () {
+        AtomicBoolean done = new AtomicBoolean(false);
+        var future = Try.attempt(() -> Thread.sleep(100))
+            .onCatch(InterruptedException.class, Throwable::printStackTrace)
+            .onFinally(() -> done.set(true))
+            .obtainLater();
+        assertFalse(done.get());
+
+        Try.attempt(() -> future.get())
+            .onCatch(Throwable::printStackTrace)
+            .run();
+        assertTrue(done.get());
+    }
 }
