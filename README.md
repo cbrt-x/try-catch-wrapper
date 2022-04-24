@@ -17,7 +17,7 @@
 # Usage
 ### Run method
 ```java
-Try.attempt(() -> executeMethod())
+Try.attempt(this::executeMethod)
 	.onCatch(e -> e.printStacktrace())
 	.run();
 ```
