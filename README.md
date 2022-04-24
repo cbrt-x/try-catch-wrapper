@@ -25,7 +25,7 @@ Try.attempt(this::executeMethod)
 ```java
 var files = Try.attempt(() -> Files.list(path))
     .onCatch(IOException.class, Throwable::printStacktrace)
-    .get();
+    .obtain();
 
 files.ifPresent(this::doSomething);
 ```
