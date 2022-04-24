@@ -17,14 +17,14 @@
 # Usage
 ### Run method
 ```java
-Try.attempt(() -> executeMethod())
-	.onCatch(e -> e.printStacktrace())
+Try.attempt(this::executeMethod)
+	.onCatch(Throwable::printStacktrace)
 	.run();
 ```
 ### Obtain value from method call
 ```java
 var files = Try.attempt(() -> Files.list(path))
-    .onCatch(IOException.class, e -> e.printStacktrace())
+    .onCatch(IOException.class, Throwable::printStacktrace)
     .get();
 
 files.ifPresent(this::doSomething);
