@@ -2,6 +2,7 @@ import io.github.jadefalke2.Try;
 import io.github.jadefalke2.exceptions.CatchBlockAlreadyExistsException;
 import io.github.jadefalke2.interfaces.UnsafeRunnable;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,6 +14,13 @@ import java.util.function.Supplier;
 import static org.junit.Assert.*;
 
 public class APITest {
+
+    private AtomicBoolean done;
+
+    @Before
+    public void setUp () {
+        done = new AtomicBoolean(false);
+    }
 
     @Test
     public void testMultipleCatchBlocks () {
@@ -43,7 +51,7 @@ public class APITest {
 
     @Test
     public void testSuccessfulRun () {
-        AtomicBoolean done = new AtomicBoolean(false);
+        done.set(false);
         Try.attempt(() -> done.set(true))
                 .onCatch(e -> fail())
                 .run();
@@ -67,7 +75,7 @@ public class APITest {
 
     @Test
     public void testFinally () {
-        AtomicBoolean done = new AtomicBoolean(false);
+        done.set(false);
         Try.attempt(() -> {})
             .onCatch(e -> fail())
             .onFinally(() -> done.set(true))
@@ -84,7 +92,7 @@ public class APITest {
 
     @Test
     public void testFuture () {
-        AtomicBoolean done = new AtomicBoolean(false);
+        done.set(false);
         var future = Try.attempt(() -> Thread.sleep(100))
             .onCatch(InterruptedException.class, Throwable::printStackTrace)
             .onFinally(() -> done.set(true))
@@ -99,8 +107,7 @@ public class APITest {
 
     @Test
     public void testFactoryMethods () {
-        AtomicBoolean done = new AtomicBoolean(false);
-
+        done.set(false);
         Runnable run = () -> done.set(true);
         Try.attempt(UnsafeRunnable.ofRunnable(run))
             .run();
