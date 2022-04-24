@@ -6,7 +6,7 @@
 
     <groupId>io.github.jadefalke</groupId>
     <artifactId>Try-Catch</artifactId>
-    <version>0.0.1-alpha</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
