@@ -1,5 +1,6 @@
 import io.github.jadefalke2.Try;
 import io.github.jadefalke2.exceptions.CatchBlockAlreadyExistsException;
+import io.github.jadefalke2.interfaces.UnsafeRunnable;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
 import org.junit.Test;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.*;
 
@@ -92,6 +94,23 @@ public class APITest {
         Try.attempt(() -> future.get())
             .onCatch(Throwable::printStackTrace)
             .run();
+        assertTrue(done.get());
+    }
+
+    @Test
+    public void testFactoryMethods () {
+        AtomicBoolean done = new AtomicBoolean(false);
+
+        Runnable run = () -> done.set(true);
+        Try.attempt(UnsafeRunnable.ofRunnable(run))
+            .run();
+        assertTrue(done.get());
+
+        done.set(false);
+        Supplier<Boolean> supplier = () -> true;
+        Try.attempt(UnsafeSupplier.ofSupplier(supplier))
+            .obtain()
+            .ifPresent(done::set);
         assertTrue(done.get());
     }
 }
