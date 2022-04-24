@@ -18,7 +18,7 @@
 ### Run method
 ```java
 Try.attempt(this::executeMethod)
-	.onCatch(e -> e.printStacktrace())
+	.onCatch(Throwable::printStacktrace)
 	.run();
 ```
 ### Obtain value from method call
