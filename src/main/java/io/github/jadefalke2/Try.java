@@ -5,11 +5,13 @@ import io.github.jadefalke2.interfaces.UnsafeRunnable;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
 import lombok.NonNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * This class describes a wrapper around a try-catch-finally block.
@@ -104,6 +106,10 @@ public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>
         try {
             val = Optional.ofNullable(attempt.supply());
         } catch (Exception e) {
+            var stacktrace = Arrays.stream(e.getStackTrace())
+                  .filter(el -> !el.getClassName().equals(getClass().getName()))
+                  .toArray(StackTraceElement[]::new);
+            e.setStackTrace(stacktrace);
             getCatchClause(e.getClass())
                     .ifPresent(exConsumer -> exConsumer.accept(e));
         } finally {
