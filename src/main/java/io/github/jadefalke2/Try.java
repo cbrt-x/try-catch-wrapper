@@ -59,10 +59,10 @@ public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>
      * @return the try instance
      */
     @SuppressWarnings("unchecked")
-    public <E extends Exception> TryBuilder.CatchBuilder<T> onCatch (@NonNull Class<E> exceptionType, @NonNull Consumer<? super E> onCatch) {
+    public <E extends Exception> TryBuilder.CatchBuilder<T> onCatch (@NonNull Class<E> exceptionType,
+                                                                     @NonNull Consumer<? super E> onCatch) {
         if (catchClauses.containsKey(exceptionType))
             throw new CatchBlockAlreadyExistsException();
-
         catchClauses.put(exceptionType, (Consumer<? super Exception>) onCatch);
         return this;
     }
@@ -113,6 +113,10 @@ public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>
         return val;
     }
 
+    /**
+     * Asynchronously computes the result and returns it in form of a future
+     * @return A future holding the returned Object
+     */
     @Override
     public CompletableFuture<Optional<T>> obtainLater () {
         return CompletableFuture.supplyAsync(this::obtain);
