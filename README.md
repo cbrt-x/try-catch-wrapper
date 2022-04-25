@@ -1,4 +1,4 @@
-# Download via Jitpack
+# Download via [Jitpack](https://jitpack.io/#Jadefalke2/Try-Catch-Wrapper/v1.0.0)
 ```xml
 <repositories>
     <repository>
