@@ -1,4 +1,4 @@
-# Download via Jitpack
+# Download via [Jitpack](https://jitpack.io/#Jadefalke2/Try-Catch-Wrapper/v1.0.0)
 ```xml
 <repositories>
     <repository>
@@ -11,7 +11,7 @@
 <dependency>
     <groupId>com.github.Jadefalke2</groupId>
     <artifactId>Try-Catch-Wrapper</artifactId>
-    <version>v0.0.1-alpha</version>
+    <version>v1.0.0</version>
 </dependency>
 ```
 # Usage
@@ -25,7 +25,7 @@ Try.attempt(this::executeMethod)
 ```java
 var files = Try.attempt(() -> Files.list(path))
     .onCatch(IOException.class, Throwable::printStacktrace)
-    .get();
+    .obtain();
 
 files.ifPresent(this::doSomething);
 ```
