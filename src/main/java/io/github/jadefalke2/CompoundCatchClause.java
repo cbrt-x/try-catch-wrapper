@@ -15,6 +15,7 @@ public class CompoundCatchClause implements CatchClause {
     private final Consumer<? super Exception> consumer;
 
     public CompoundCatchClause(Collection<Class<? extends Exception>> exceptionTypes, Consumer<? super Exception> consumer) {
+        checkTypes(exceptionTypes);
         this.exceptionTypes = new HashSet<>(exceptionTypes);
         this.consumer = consumer;
     }
@@ -32,5 +33,26 @@ public class CompoundCatchClause implements CatchClause {
     @Override
     public Consumer<? super Exception> consumer() {
         return consumer;
+    }
+
+    /**
+     * Checks that the given exception types are valid for a compound catch
+     * clause. That is, all the types must not be subtypes of each other.
+     * @param exceptionTypes The exception types to check.
+     * @throws IllegalArgumentException If some types are invalid.
+     */
+    private void checkTypes(Collection<Class<? extends Exception>> exceptionTypes) throws IllegalArgumentException {
+        for (var typeA : exceptionTypes) {
+            for (var typeB : exceptionTypes) {
+                if (typeA == typeB) continue;
+                if (typeA.isAssignableFrom(typeB) || typeB.isAssignableFrom(typeA)) {
+                    throw new IllegalArgumentException(String.format(
+                            "%s and %s may not both be caught by the same compound catch clause.",
+                            typeA.getSimpleName(),
+                            typeB.getSimpleName()
+                    ));
+                }
+            }
+        }
     }
 }

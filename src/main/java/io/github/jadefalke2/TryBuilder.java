@@ -16,16 +16,16 @@ public interface TryBuilder <T> {
 	CompletableFuture<Optional<T>> obtainLater();
 
 	interface CatchBuilder <T> extends TryBuilder<T> {
-		CatchBuilder<T> onCatch(@NonNull Consumer<Exception> onCatch);
+		CatchBuilder<T> onCatch(@NonNull Consumer<? super Exception> onCatch);
 
 		<E extends Exception> CatchBuilder<T> onCatch(
 				@NonNull Class<E> exceptionType,
-				@NonNull Consumer<E> onCatch
+				@NonNull Consumer<? super E> onCatch
 		);
 
 		CatchBuilder<T> onCatch(
 				@NonNull Collection<Class<? extends Exception>> exceptionTypes,
-				@NonNull Consumer<Exception> onCatch
+				@NonNull Consumer<? super Exception> onCatch
 		);
 
 		TryBuilder<T> onFinally (Runnable runnable);

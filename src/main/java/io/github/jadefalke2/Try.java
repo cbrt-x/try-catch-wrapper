@@ -83,7 +83,7 @@ public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>
      * @return This builder object.
      */
     @Override
-    public CatchBuilder<T> onCatch(@NonNull Consumer<Exception> onCatch) {
+    public CatchBuilder<T> onCatch(@NonNull Consumer<? super Exception> onCatch) {
         addCatchClause(new SingleCatchClause<>(Exception.class, onCatch));
         return this;
     }
@@ -96,7 +96,7 @@ public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>
      * @param <E> The exception type.
      */
     @Override
-    public <E extends Exception> CatchBuilder<T> onCatch(@NonNull Class<E> exceptionType, @NonNull Consumer<E> onCatch) {
+    public <E extends Exception> CatchBuilder<T> onCatch(@NonNull Class<E> exceptionType, @NonNull Consumer<? super E> onCatch) {
         addCatchClause(new SingleCatchClause<>(exceptionType, onCatch));
         return this;
     }
@@ -108,7 +108,7 @@ public class Try <T, Ex extends Exception> implements TryBuilder.CatchBuilder<T>
      * @return This builder object.
      */
     @Override
-    public CatchBuilder<T> onCatch(@NonNull Collection<Class<? extends Exception>> exceptionTypes, @NonNull Consumer<Exception> onCatch) {
+    public CatchBuilder<T> onCatch(@NonNull Collection<Class<? extends Exception>> exceptionTypes, @NonNull Consumer<? super Exception> onCatch) {
         addCatchClause(new CompoundCatchClause(exceptionTypes, onCatch));
         return this;
     }

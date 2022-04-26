@@ -1,11 +1,11 @@
-import io.github.jadefalke2.Try;
+package io.github.jadefalke2;
+
 import io.github.jadefalke2.exceptions.CatchClauseAlreadyExistsException;
 import io.github.jadefalke2.interfaces.UnsafeRunnable;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -13,13 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class APITest {
 
     private AtomicBoolean done;
 
-    @Before
+    @BeforeEach
     public void setUp () {
         done = new AtomicBoolean(false);
     }
@@ -53,7 +53,7 @@ public class APITest {
         // Check that we correctly handle compound catch clauses.
         done.set(false);
         Try.attempt(() -> {throw new IOException();})
-                .onCatch(Set.of(IOException.class, FileNotFoundException.class), e -> done.set(true))
+                .onCatch(Set.of(IOException.class, RuntimeException.class), e -> done.set(true))
                 .run();
         assertTrue(done.get());
     }

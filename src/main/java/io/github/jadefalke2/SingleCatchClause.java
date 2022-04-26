@@ -14,7 +14,7 @@ public class SingleCatchClause<T extends Exception> implements CatchClause {
     private final Class<T> exceptionType;
     private final Consumer<? super T> consumer;
 
-    public SingleCatchClause(Class<T> exceptionType, Consumer<T> consumer) {
+    public SingleCatchClause(Class<T> exceptionType, Consumer<? super T> consumer) {
         this.exceptionType = exceptionType;
         this.consumer = consumer;
     }
