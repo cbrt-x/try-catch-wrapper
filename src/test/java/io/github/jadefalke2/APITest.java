@@ -1,30 +1,32 @@
-import io.github.jadefalke2.Try;
-import io.github.jadefalke2.exceptions.CatchBlockAlreadyExistsException;
+package io.github.jadefalke2;
+
+import io.github.jadefalke2.exceptions.CatchClauseAlreadyExistsException;
 import io.github.jadefalke2.interfaces.UnsafeRunnable;
 import io.github.jadefalke2.interfaces.UnsafeSupplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class APITest {
 
     private AtomicBoolean done;
 
-    @Before
+    @BeforeEach
     public void setUp () {
         done = new AtomicBoolean(false);
     }
 
     @Test
     public void testMultipleCatchBlocks () {
-        assertThrows(CatchBlockAlreadyExistsException.class,
+        assertThrows(CatchClauseAlreadyExistsException.class,
                 () -> Try.attempt(() -> System.out.println("Test"))
                         .onCatch(RuntimeException.class, Throwable::printStackTrace)
                         .onCatch(RuntimeException.class, e -> System.out.println(e.getMessage()))
@@ -45,6 +47,13 @@ public class APITest {
         AtomicBoolean done = new AtomicBoolean(false);
         Try.attempt(() -> {throw new Exception();})
                 .onCatch(e -> done.set(true))
+                .run();
+        assertTrue(done.get());
+
+        // Check that we correctly handle compound catch clauses.
+        done.set(false);
+        Try.attempt(() -> {throw new IOException();})
+                .onCatch(Set.of(IOException.class, RuntimeException.class), e -> done.set(true))
                 .run();
         assertTrue(done.get());
     }
