@@ -2,8 +2,9 @@ package io.github.jadefalke2;
 
 import io.github.jadefalke2.exceptions.CatchClauseAlreadyExistsException;
 import io.github.jadefalke2.interfaces.CatchClause;
-import io.github.jadefalke2.interfaces.UnsafeRunnable;
-import io.github.jadefalke2.interfaces.UnsafeSupplier;
+import io.github.jadefalke2.functions.UnsafeRunnable;
+import io.github.jadefalke2.functions.UnsafeSupplier;
+import io.github.jadefalke2.interfaces.TryBuilder;
 import lombok.NonNull;
 
 import java.util.Collection;

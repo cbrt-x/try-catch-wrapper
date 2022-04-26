@@ -1,4 +1,4 @@
-package io.github.jadefalke2.interfaces;
+package io.github.jadefalke2.functions;
 
 import java.util.function.Supplier;
 
