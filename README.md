@@ -9,7 +9,7 @@
 ```
 ```xml
 <dependency>
-    <groupId>com.github.Jadefalke2</groupId>
+    <groupId>com.github.Jadefalke256</groupId>
     <artifactId>Try-Catch-Wrapper</artifactId>
     <version>v1.0.1</version>
 </dependency>
@@ -35,3 +35,4 @@ Try.attempt(this::startProcess)
     .onFinally(this::endProcess);
     .run();
 ```
+
